@@ -1,4 +1,4 @@
-# Zero Cost Stack - DevOps Task Manager
+# Cloud native task manager - DevOps Task Manager
 
 Complete DevOps demonstration project built with React, Node.js, PostgreSQL, Docker, and Kubernetes - **100% free tier compatible**.
 
@@ -75,7 +75,7 @@ This project demonstrates a full DevOps pipeline for a Task Management applicati
 ## 📁 Project Structure
 
 ```
-zero-cost-stack/
+cloud-native-task-manager/
 ├── frontend/                 # React TypeScript app
 │   ├── src/
 │   │   ├── components/      # React components

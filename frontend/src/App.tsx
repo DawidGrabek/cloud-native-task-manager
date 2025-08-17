@@ -126,17 +126,17 @@ function App() {
     )
   }
 
-  // if (!user) {
-  //   return (
-  //     <div className="min-h-screen bg-gray-100">
-  //       <LoginForm onLogin={handleLogin} healthStatus={healthStatus} />
-  //     </div>
-  //   )
-  // }
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-100">
+        <LoginForm onLogin={handleLogin} healthStatus={healthStatus} />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* <Header user={user} onLogout={handleLogout} healthStatus={healthStatus} /> */}
+      <Header user={user} onLogout={handleLogout} healthStatus={healthStatus} />
 
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">

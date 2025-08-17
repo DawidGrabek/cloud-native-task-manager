@@ -11,8 +11,7 @@ import type {
   User,
 } from '../types'
 
-const API_BASE_URL =
-  import.meta.env.REACT_APP_API_URL || 'http://localhost:5000/api'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -101,19 +100,19 @@ export const tasksApi = {
 
   updateTask: async (id: string, updates: UpdateTaskDto): Promise<Task> => {
     const response: AxiosResponse<ApiResponse<Task>> = await api.put(
-      `/tasks/$\{id}`,
+      `/tasks/${id}`,
       updates
     )
     return response.data.data
   },
 
   deleteTask: async (id: string): Promise<void> => {
-    await api.delete(`/tasks/$\{id}`)
+    await api.delete(`/tasks/${id}`)
   },
 
   getTaskById: async (id: string): Promise<Task> => {
     const response: AxiosResponse<ApiResponse<Task>> = await api.get(
-      `/tasks/$\{id}`
+      `/tasks/${id}`
     )
     return response.data.data
   },
