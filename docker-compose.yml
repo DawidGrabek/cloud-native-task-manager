@@ -31,7 +31,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-      target: production
+      # target: production
     container_name: taskmanager-backend
     restart: unless-stopped
     environment:
