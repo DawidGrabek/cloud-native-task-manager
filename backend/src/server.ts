@@ -82,7 +82,7 @@ app.get('/', (req, res) => {
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
-    message: `Route $\{req.originalUrl} not found`,
+    message: `Route ${req.originalUrl} not found`,
     error: 'Not Found',
   })
 })
@@ -100,12 +100,12 @@ const startServer = async () => {
     await initializeDatabase()
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port $\{PORT}`)
-      console.log(`📊 Environment: $\{process.env.NODE_ENV || 'development'}`)
+      console.log(`🚀 Server running on port ${PORT}`)
+      console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`)
       console.log(
-        `🌍 CORS enabled for: $\{process.env.FRONTEND_URL || 'http://localhost:3000'}`
+        `🌍 CORS enabled for: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`
       )
-      console.log(`📋 API Documentation: http://localhost:$\{PORT}/api/health`)
+      console.log(`📋 API Documentation: http://localhost:${PORT}/api/health`)
     })
   } catch (error) {
     console.error('❌ Failed to start server:', error)
