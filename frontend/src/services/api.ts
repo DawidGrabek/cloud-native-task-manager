@@ -24,23 +24,39 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('authToken')
   if (token) {
-    config.headers.Authorization = `Bearer $\{token}`
+    config.headers.Authorization = `Bearer ${token}`
   }
   return config
 })
 
 // Response interceptor for error handling
+// api.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     if (error.response?.status === 401) {
+//       localStorage.removeItem('authToken')
+//       localStorage.removeItem('user')
+//       window.location.href = '/login'
+//     }
+//     return Promise.reject(error)
+//   }
+// )
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('authToken')
-      localStorage.removeItem('user')
-      window.location.href = '/login'
+  response => response,
+  error => {
+    // Obsługuj 401 TYLKO DLA REQUESTÓW wymagających auth!
+    if (
+      error.response?.status === 401 &&
+      error.config.url !== '/api/health' // nie dla health-checków
+    ) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      // Opcjonalnie: zamiast hard reload, użyj useNavigate lub history.push('/login')
+      window.location.href = '/login';
     }
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
 // Health check
 export const healthCheck = async (): Promise<

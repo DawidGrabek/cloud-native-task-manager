@@ -31,13 +31,13 @@ router.get('/', async (req: Request, res: Response) => {
 
     if (status) {
       paramCount++
-      query += ` AND status = $$\{paramCount}`
+      query += ` AND status = $${paramCount}`
       queryParams.push(status)
     }
 
     if (priority) {
       paramCount++
-      query += ` AND priority = $$\{paramCount}`
+      query += ` AND priority = $${paramCount}`
       queryParams.push(priority)
     }
 
@@ -45,13 +45,13 @@ router.get('/', async (req: Request, res: Response) => {
 
     if (limit) {
       paramCount++
-      query += ` LIMIT $$\{paramCount}`
+      query += ` LIMIT $${paramCount}`
       queryParams.push(parseInt(limit as string))
     }
 
     if (offset) {
       paramCount++
-      query += ` OFFSET $$\{paramCount}`
+      query += ` OFFSET $${paramCount}`
       queryParams.push(parseInt(offset as string))
     }
 
@@ -223,7 +223,7 @@ router.put('/:id', async (req: Request, res: Response): Promise<void> => {
     }
 
     const setClause = updates
-      .map((field, index) => `$\{field} = $$\{index + 1}`)
+      .map((field, index) => `${field} = $${index + 1}`)
       .join(', ')
     values.push(id, userId)
 
