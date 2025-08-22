@@ -6,7 +6,7 @@ set -e
 
 SERVICE="$1"
 if [ -z "$SERVICE" ]; then
-  echo "Podaj parametr: frontend lub backend"
+  echo "Give parametr: frontend or backend"
   exit 1
 fi
 
