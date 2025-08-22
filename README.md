@@ -8,13 +8,13 @@ This project demonstrates a full DevOps pipeline for a Task Management applicati
 
 ### Architecture
 
-- **Frontend**: React + TypeScript + Tailwind CSS
+- **Frontend**: React + TypeScript + Vite + Tailwind CSS
 - **Backend**: Node.js + Express + TypeScript
-- **Database**: PostgreSQL
-- **Containerization**: Docker + Docker Compose
-- **Orchestration**: k3s (local) / AWS ECS (free tier)
+- **Database**: PostgreSQL 15-alpine
+- **Containerization**: Docker + multi-stage builds
+- **Orchestration**: k3s (lightweight Kubernetes)
 - **CI/CD**: GitHub Actions (free for public repos)
-- **Monitoring**: Grafana Cloud (free tier)
+- **Monitoring**: Grafana Cloud (free tier) - *Coming soon*
 - **Container Registry**: GitHub Container Registry (free)
 
 ## 🚀 Quick Start
@@ -23,160 +23,177 @@ This project demonstrates a full DevOps pipeline for a Task Management applicati
 
 - Node.js 18+
 - Docker & Docker Compose
+- k3s (for Kubernetes deployment)
 - Git
 
-### Local Development
+### Kubernetes Deployment (k3s)
 
 1. **Clone the repository**
-
    ```bash
-   git clone https://github.com/yourusername/zero-cost-stack.git
-   cd zero-cost-stack
+   git clone https://github.com/yourusername/cloud-native-task-manager.git
+   cd cloud-native-task-manager
    ```
 
-2. **Start with Docker Compose**
+2. **Deploy to k3s**
+   ```bash
+   ./build-and-deploy.sh
+   ```
 
+3. **Access the application**
+   ```bash
+   kubectl get services -n taskmanager
+   ```
+   - Frontend: http://<NODE_IP>:<NodePort>
+   - Backend API: Internal only (backend-service:5000)
+
+### Local Development with Docker Compose
+
+1. **Start with Docker Compose**
    ```bash
    docker-compose up --build
    ```
 
-3. **Access the application**
+2. **Access the application**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:5000
    - Database: localhost:5432
-
-### Manual Setup (Development)
-
-1. **Backend setup**
-
-   ```bash
-   cd backend
-   npm install
-   npm run dev
-   ```
-
-2. **Frontend setup**
-
-   ```bash
-   cd frontend
-   npm install
-   npm start
-   ```
-
-3. **Database setup**
-   ```bash
-   docker run -d --name postgres \
-     -e POSTGRES_DB=taskmanager \
-     -e POSTGRES_USER=admin \
-     -e POSTGRES_PASSWORD=password \
-     -p 5432:5432 postgres:15-alpine
-   ```
 
 ## 📁 Project Structure
 
 ```
 cloud-native-task-manager/
-├── frontend/                 # React TypeScript app
+├── frontend/                    # React TypeScript app with NGINX
 │   ├── src/
-│   │   ├── components/      # React components
-│   │   ├── services/        # API calls
-│   │   ├── types/          # TypeScript definitions
+│   │   ├── components/         # React components
+│   │   ├── services/           # API calls
+│   │   ├── types/             # TypeScript definitions
 │   │   └── App.tsx
-│   ├── Dockerfile
+│   ├── nginx.conf             # NGINX reverse proxy config
+│   ├── Dockerfile             # Multi-stage build (Node + NGINX)
 │   └── package.json
-├── backend/                 # Node.js Express API
+├── backend/                    # Node.js Express API
 │   ├── src/
-│   │   ├── routes/         # API routes
-│   │   ├── models/         # Database models
-│   │   ├── middleware/     # Express middleware
+│   │   ├── routes/            # API routes (/api/health, /api/tasks)
+│   │   ├── models/            # Database models
+│   │   ├── middleware/        # Express middleware
 │   │   └── server.ts
-│   ├── Dockerfile
+│   ├── Dockerfile             # Node.js production image
 │   └── package.json
-├── database/               # Database scripts
-│   └── init.sql
-├── docker/                # Docker configurations
-├── docker-compose.yml     # Local development
+├── k8s/                       # Kubernetes manifests
+│   ├── namespace.yaml         # taskmanager namespace
+│   ├── postgres-deployment.yaml
+│   ├── backend-deployment.yaml
+│   ├── frontend-deployment.yaml
+│   └── services.yaml
+├── scripts/
+│   ├── build-and-deploy.sh    # Full deployment script
+│   ├── reload-k8s-image.sh    # Development helper
+├── docker-compose.yml         # Local development
 └── README.md
 ```
 
 ## 🛠 Technologies Used
 
 ### Frontend
-
-- React 18 + TypeScript
+- React 18 + TypeScript + Vite
 - Tailwind CSS for styling
 - Axios for API calls
 - React Hook Form for forms
+- NGINX as reverse proxy
 
 ### Backend
-
 - Node.js + Express + TypeScript
 - PostgreSQL with pg driver
-- bcrypt for password hashing
-- JWT for authentication
+- JWT ready for authentication
 - CORS enabled
+- Health check endpoints
 
-### DevOps
+### DevOps & Infrastructure
+- **Docker**: Multi-stage builds (< 60MB frontend, < 150MB backend)
+- **k3s**: Lightweight Kubernetes for local/edge deployment
+- **Kubernetes**: Deployments, Services, LoadBalancer
+- **Container Images**: Optimized Alpine-based images
 
-- Docker multi-stage builds (< 500MB images)
-- Docker Compose for local development
-- GitHub Actions for CI/CD
-- k3s for local Kubernetes
-- Terraform for IaC
-
-## 🎨 Features
+## 🎨 Current Features
 
 - ✅ Create, update, delete tasks
 - ✅ Task status management (Todo, In Progress, Done)
-- ✅ User authentication (JWT)
-- ✅ Responsive design
-- ✅ API health checks
-- ✅ Database migrations
-- ✅ Docker containerization
-- ✅ CI/CD pipeline ready
+- ✅ Responsive design with Tailwind CSS
+- ✅ API health checks (`/api/health`)
+- ✅ Database connection monitoring
+- ✅ Docker multi-stage containerization
+- ✅ Kubernetes deployment with k3s
+- ✅ NGINX reverse proxy
+- ✅ Automated deployment scripts
 
 ## 🔧 Development Commands
 
 ```bash
-# Backend
-npm run dev          # Start development server
-npm run build        # Build TypeScript
-npm run test         # Run tests
-npm run lint         # ESLint check
+# Quick deployment
+./build-and-deploy.sh                    # Deploy full stack to k3s
 
-# Frontend
-npm start            # Start development server
-npm run build        # Build for production
-npm run test         # Run tests
-npm run lint         # ESLint check
+# Development helpers  
+./reload-k8s-image.sh frontend          # Update only frontend
+./reload-k8s-image.sh backend           # Update only backend
+./stop-app.sh                           # Stop application
 
-# Docker
-docker-compose up --build    # Build and start all services
-docker-compose down          # Stop all services
-docker system prune -f       # Clean up Docker cache
+# Manual Kubernetes
+kubectl get pods -n taskmanager         # Check status
+kubectl logs -n taskmanager -l app=backend  # View backend logs
+kubectl delete namespace taskmanager    # Clean deployment
+
+# Docker maintenance
+docker image prune -f                   # Clean dangling images
+docker system df                        # Check disk usage
+
+# Backend development
+cd backend && npm run dev               # Start development server
+npm run build && npm run test          # Build and test
+
+# Frontend development  
+cd frontend && npm run dev              # Start Vite dev server
+npm run build                          # Build for production
 ```
 
 ## 📊 Monitoring & Health Checks
 
-- **Backend health**: GET /api/health
-- **Database health**: GET /api/health/db
-- **Prometheus metrics**: GET /api/metrics (if enabled)
+- **Application health**: `/api/health`
+  ```json
+  {
+    "success": true,
+    "data": {
+      "status": "healthy",
+      "services": {
+        "database": { "healthy": true, "responseTime": 3 },
+        "api": { "healthy": true, "responseTime": 475.893221 }
+      },
+      "uptime": 59.100750194
+    }
+  }
+  ```
+- **Database health**: Included in `/api/health`
+- **Kubernetes probes**: Liveness and readiness probes configured
 
-## 🌐 Deployment
+## 🌐 Upcoming Features
 
-This project is designed for zero-cost deployment using:
+### Next Phase: CI/CD Pipeline
+- **GitHub Actions** for automated builds
+- **Automated testing** (unit, integration, e2e)
+- **Multi-environment deployments** (dev/staging/prod)
+- **Container scanning** and security checks
 
-- **AWS Free Tier**: ECS + ECR + RDS
-- **Oracle Cloud Always Free**: 4 vCPU + 24GB RAM forever
-- **GitHub Actions**: Unlimited CI/CD for public repos
-- **Grafana Cloud**: 10k metrics series free
+### Future Phases:
+- **Authentication**: JWT + refresh tokens
+- **Monitoring**: Prometheus + Grafana stack  
+- **Cloud deployment**: AWS Free Tier / Oracle Cloud Always Free
+- **Infrastructure as Code**: Terraform/Helm
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests if applicable
+4. Test with `./build-and-deploy.sh`
 5. Submit a pull request
 
 ## 📄 License
@@ -185,11 +202,13 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 👨‍💻 Author
 
-**Dawid Grabek** - React Developer transitioning to DevOps
+**Dawid Grabek** - Full-stack Developer specializing in DevOps
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
+- Experience: React, Node.js, TypeScript, Docker, Kubernetes
+- Focus: Cloud-native applications, CI/CD, monitoring
+- GitHub: [@dawidgrabek](https://github.com/DawidGrabek)
+- LinkedIn: [Dawid Grabek](https://www.linkedin.com/in/dawid-grabek/)
 
 ---
 
-_This project demonstrates modern DevOps practices using entirely free-tier services, perfect for portfolio and learning purposes._
+_This project demonstrates modern DevOps practices using k3s and entirely free-tier services, perfect for portfolio and learning purposes._
