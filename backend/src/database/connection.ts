@@ -1,6 +1,8 @@
 // src/database/connection.ts
 import { Pool } from 'pg'
 import dotenv from 'dotenv'
+import bcrypt from 'bcrypt'
+// const bcrypt = require('bcrypt')
 
 dotenv.config()
 
@@ -74,7 +76,6 @@ export const initializeDatabase = async (): Promise<void> => {
     )
 
     if (demoUserCheck.rows.length === 0) {
-      const bcrypt = require('bcrypt')
       const hashedPassword = await bcrypt.hash('demo123', 10)
 
       const demoUser = await client.query(
