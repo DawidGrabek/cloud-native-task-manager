@@ -4,3 +4,10 @@ metadata:
   name: taskmanager
   labels:
     name: taskmanager
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    name: monitoring

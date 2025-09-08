@@ -7,11 +7,12 @@ import rateLimit from 'express-rate-limit'
 import dotenv from 'dotenv'
 
 import { authRoutes } from './routes/auth'
-import { taskRoutes } from './routes/tasks'
+import { taskRoutes } from './routes/tasks'  
 import { healthRoutes } from './routes/health'
 import { errorHandler } from './middleware/errorHandler'
 import { authenticateToken } from './middleware/auth'
-import { connectDatabase, initializeDatabase } from './database/connection'
+import { connectDatabase, initializeDatabase, pool } from './database/connection' // ← DODAJ pool
+import { collectHttpMetrics, register, updateDbMetrics, updateTaskMetrics } from './middleware/metrics'
 
 // Load environment variables
 dotenv.config()
@@ -44,6 +45,31 @@ const limiter = rateLimit({
   legacyHeaders: false,
 })
 app.use(limiter)
+
+// Metrics middleware
+app.use(collectHttpMetrics)
+
+// Metrics endpoint
+app.get('/api/metrics', async (req, res) => {
+  try {
+    res.set('Content-Type', register.contentType)
+    const metrics = await register.metrics()
+    res.end(metrics)
+  } catch (error) {
+    console.error('Error getting metrics:', error)
+    res.status(500).end('Error getting metrics')
+  }
+})
+
+// Update metrics periodically
+setInterval(async () => {
+  try {
+    await updateTaskMetrics(pool)
+    updateDbMetrics(pool)
+  } catch (error) {
+    console.error('Error updating metrics:', error)
+  }
+}, 30000) // Every 30 seconds
 
 // CORS configuration
 app.use(
@@ -106,6 +132,7 @@ const startServer = async () => {
         `🌍 CORS enabled for: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`
       )
       console.log(`📋 API Documentation: http://localhost:${PORT}/api/health`)
+      console.log(`📈 Metrics available at: http://localhost:${PORT}/api/metrics`)
     })
   } catch (error) {
     console.error('❌ Failed to start server:', error)
@@ -114,15 +141,15 @@ const startServer = async () => {
 }
 
 // Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('🛑 SIGTERM received, shutting down gracefully')
+const gracefulShutdown = (signal: string) => {
+  console.log(`🛑 ${signal} received, shutting down gracefully`)
+  
+  // Stop accepting new connections
   process.exit(0)
-})
+}
 
-process.on('SIGINT', () => {
-  console.log('🛑 SIGINT received, shutting down gracefully')
-  process.exit(0)
-})
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
+process.on('SIGINT', () => gracefulShutdown('SIGINT'))
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {

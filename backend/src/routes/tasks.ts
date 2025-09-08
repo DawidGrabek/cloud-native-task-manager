@@ -2,8 +2,16 @@
 import { Router, Request, Response } from 'express'
 import Joi from 'joi'
 import { pool } from '../database/connection'
+import { taskOperations } from '../middleware/metrics';
 
 const router = Router()
+
+// W każdej operacji dodaj metryki, np:
+// Po udanym utworzeniu taska:
+taskOperations.labels('create', 'success').inc();
+
+// Po błędzie:
+taskOperations.labels('create', 'error').inc();
 
 // Validation schemas
 const createTaskSchema = Joi.object({
