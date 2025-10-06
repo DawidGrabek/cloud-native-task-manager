@@ -17,47 +17,45 @@ spec:
       hostNetwork: true
       hostPID: true
       containers:
-      - name: node-exporter
-        image: prom/node-exporter:v1.6.1
-        args:
-          - '--path.procfs=/host/proc'
-          - '--path.sysfs=/host/sys'
-          - '--path.rootfs=/host/root'
-          - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-        ports:
-        - containerPort: 9100
-          protocol: TCP
-        resources:
-          limits:
-            cpu: 250m
-            memory: 180Mi
-          requests:
-            cpu: 102m
-            memory: 180Mi
-        volumeMounts:
-        - name: proc
-          mountPath: /host/proc
-          readOnly: true
-        - name: sys
-          mountPath: /host/sys
-          readOnly: true
-        - name: root 
-          mountPath: /host/root
-          mountPropagation: HostToContainer
-          readOnly: true
+        - name: node-exporter
+          image: prom/node-exporter:v1.6.1
+          securityContext:
+            privileged: true # require for Docker Desktop
+          args:
+            - '--path.procfs=/host/proc'
+            - '--path.sysfs=/host/sys'
+            - '--path.rootfs=/host/root'
+            - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+          ports:
+            - containerPort: 9100
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 250m
+              memory: 180Mi
+            requests:
+              cpu: 102m
+              memory: 180Mi
+          volumeMounts:
+            - name: proc
+              mountPath: /host/proc
+              readOnly: true
+            - name: sys
+              mountPath: /host/sys
+              readOnly: true
       volumes:
-      - name: proc
-        hostPath:
-          path: /proc
-      - name: sys
-        hostPath:
-          path: /sys
-      - name: root
-        hostPath:
-          path: /
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: root
+          hostPath:
+            path: /
       tolerations:
-      - effect: NoSchedule
-        operator: Exists
+        - effect: NoSchedule
+          operator: Exists
 ---
 apiVersion: v1
 kind: Service
@@ -68,9 +66,9 @@ metadata:
     app: node-exporter
 spec:
   ports:
-  - name: node-exporter
-    port: 9100
-    protocol: TCP
+    - name: node-exporter
+      port: 9100
+      protocol: TCP
   selector:
     app: node-exporter
   type: ClusterIP
