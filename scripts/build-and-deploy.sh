@@ -19,8 +19,10 @@ sleep 2s
 kubectl apply -f k8s/
 
 echo "Waiting for deployments..."
-kubectl wait --namespace=taskmanager --for=condition=available --timeout=300s deployment/backend || true
-kubectl wait --namespace=taskmanager --for=condition=available --timeout=300s deployment/frontend || true
+kubectl rollout restart deployment/backend -n taskmanager || true
+kubectl rollout restart deployment/frontend -n taskmanager || true
+# kubectl wait --namespace=taskmanager --for=condition=available --timeout=300s deployment/backend || true
+# kubectl wait --namespace=taskmanager --for=condition=available --timeout=300s deployment/frontend || true
 kubectl wait --namespace=monitoring --for=condition=available --timeout=300s deployment/prometheus || true
 kubectl wait --namespace=monitoring --for=condition=available --timeout=300s deployment/grafana || true
 
