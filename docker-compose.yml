@@ -154,12 +154,40 @@ services:
       - ./docker-monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
       - grafana_data:/var/lib/grafana
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
       - GF_USERS_ALLOW_SIGN_UP=false
     ports:
-      - '3001:3000'
+      - '3000:3000'
     depends_on:
       - prometheus
+    networks:
+      - taskmanager-network
+
+  # Loki for log aggregation
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: taskmanager-loki
+    restart: unless-stopped
+    ports:
+      - '3100:3100'
+    volumes:
+      - ./docker-monitoring/loki/loki-config.yaml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - taskmanager-network
+
+  # Promtail for collecting Docker logs → Loki
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: taskmanager-promtail
+    restart: unless-stopped
+    volumes:
+      - ./docker-monitoring/promtail/promtail-config.yaml:/etc/promtail/config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
     networks:
       - taskmanager-network
 
@@ -172,6 +200,8 @@ volumes:
     name: taskmanager_prometheus_data
   grafana_data:
     name: taskmanager_grafana_data
+  loki_data:
+    name: taskmanager_loki_data
 
 networks:
   taskmanager-network:

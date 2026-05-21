@@ -13,8 +13,6 @@ register.setDefaultLabels({
 
 // Enable the collection of default metrics
 promClient.collectDefaultMetrics({
-  // app: 'taskmanager-backend',
-  prefix: 'taskmanager_',
   gcDurationBuckets: [0.001, 0.01, 0.1, 1, 2, 5],
   register
 });
