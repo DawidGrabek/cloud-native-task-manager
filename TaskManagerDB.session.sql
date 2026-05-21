@@ -1,4 +1,0 @@
-select * FROM tasks
-
-
-

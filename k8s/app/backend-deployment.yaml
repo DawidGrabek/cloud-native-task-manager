@@ -19,8 +19,8 @@ spec:
     spec:
       containers:
         - name: backend
-          image: taskmanager-backend:latest
-          imagePullPolicy: IfNotPresent # For local k3s
+          image: grabekd/taskmanager-backend:latest
+          imagePullPolicy: Always # Always pull from Docker Hub
           env:
             - name: NODE_ENV
               value: 'production'

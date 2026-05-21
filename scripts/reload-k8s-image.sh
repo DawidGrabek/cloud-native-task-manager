@@ -10,16 +10,16 @@ if [ -z "$SERVICE" ]; then
   exit 1
 fi
 
-IMAGE="taskmanager-$SERVICE:latest"
+DOCKER_USER="grabekd"
+IMAGE="${DOCKER_USER}/taskmanager-$SERVICE:latest"
 DIR="./$SERVICE"
 
 # Build image
 docker build -t "$IMAGE" "$DIR"
 
-# Save and import into k3s (containerd)
-docker save -o "$SERVICE.tar" "$IMAGE"
-sudo k3s ctr images import "$SERVICE.tar"
-rm "$SERVICE.tar"
+# Push to Docker Hub
+echo "Pushing image to Docker Hub..."
+docker push "$IMAGE"
 
 # Restart deployment in kubernetes
 kubectl rollout restart deployment/"$SERVICE" -n taskmanager

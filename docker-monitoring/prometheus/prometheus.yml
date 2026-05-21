@@ -1,0 +1,13 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'taskmanager-backend'
+    metrics_path: '/api/metrics'
+    static_configs:
+      # host.docker.internal is used to reach the backend running on the host machine (Mac) via npm run dev
+      - targets: ['host.docker.internal:5000']

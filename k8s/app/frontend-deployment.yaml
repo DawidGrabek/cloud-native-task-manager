@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: taskmanager-frontend:latest
-          imagePullPolicy: IfNotPresent # For local k3s
+          image: grabekd/taskmanager-frontend:latest
+          imagePullPolicy: Always # Always pull from Docker Hub
           ports:
             - containerPort: 80
           resources:
