@@ -44,9 +44,9 @@ services:
       DB_PASSWORD: password
       JWT_SECRET: your-super-secret-jwt-key-for-development
       JWT_EXPIRES_IN: 24h
-      FRONTEND_URL: http://localhost:3000,http://localhost:5173
+      FRONTEND_URL: http://localhost:5173
     ports:
-      - '5001:5000'
+      - '5000:5000'
     depends_on:
       database:
         condition: service_healthy
@@ -75,7 +75,7 @@ services:
     environment:
       VITE_API_URL: /api
     ports:
-      - '3000:80'
+      - '5173:80'
     depends_on:
       backend-service:
         condition: service_healthy
@@ -98,7 +98,7 @@ services:
     container_name: taskmanager-redis
     restart: unless-stopped
     ports:
-      - '6379:6379'
+      - '6380:6379'
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
