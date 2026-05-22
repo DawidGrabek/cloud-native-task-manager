@@ -49,7 +49,8 @@ const tasksTotal = new promClient.Gauge({
 export const taskOperations = new promClient.Counter({
   name: 'taskmanager_task_operations_total',
   help: 'Total number of task operations',
-  labelNames: ['operation', 'status'] // create, update, delete + success/error
+  labelNames: ['operation', 'status'], // create, update, delete + success/error
+  registers: [register]
 });
 
 

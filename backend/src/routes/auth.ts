@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import Joi from 'joi'
 import { pool } from '../database/connection'
 import { authenticateToken } from '../middleware/auth'
+import logger from '../utils/logger'
 
 const router = Router()
 
@@ -22,29 +23,31 @@ const loginSchema = Joi.object({
 
 // Register new user
 router.post('/register', async (req: Request, res: Response): Promise<void> => {
+  const { error } = registerSchema.validate(req.body)
+  if (error) {
+    logger.warn('Registration validation failed', {
+      validationError: error.details?.[0]?.message,
+    })
+    res.status(400).json({
+      success: false,
+      message: 'Validation error',
+      error: error.details?.[0]?.message,
+    })
+    return
+  }
+
+  const { name, email, password } = req.body
+
+  logger.info('User registration attempt', { email })
+
   try {
-    const { error } = registerSchema.validate(req.body)
-    if (error) {
-      res.status(400).json({
-        success: false,
-        message: 'Validation error',
-        error:
-          error.details && error.details[0]
-            ? error.details[0].message
-            : undefined,
-      })
-      return
-    }
-
-    const { name, email, password } = req.body
-
-    // Check if user already exists
     const existingUser = await pool.query(
       'SELECT id FROM users WHERE email = $1',
       [email.toLowerCase()]
     )
 
     if (existingUser.rows.length > 0) {
+      logger.warn('Registration rejected: email already in use', { email })
       res.status(409).json({
         success: false,
         message: 'User with this email already exists',
@@ -52,11 +55,9 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
       return
     }
 
-    // Hash password
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(password, saltRounds)
 
-    // Create user
     const newUser = await pool.query(
       'INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, name, email, created_at',
       [name.trim(), email.toLowerCase(), passwordHash]
@@ -64,7 +65,6 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 
     const user = newUser.rows[0]
 
-    // Generate JWT token
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       process.env.JWT_SECRET || 'your-secret-key',
@@ -73,6 +73,8 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
         algorithm: 'HS256',
       } as jwt.SignOptions
     )
+
+    logger.info('User registered successfully', { userId: user.id, email: user.email })
 
     res.status(201).json({
       success: true,
@@ -88,7 +90,10 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
       },
     })
   } catch (error) {
-    console.error('Register error:', error)
+    logger.error('Registration failed', {
+      email,
+      error: error instanceof Error ? error.message : String(error),
+    })
     res.status(500).json({
       success: false,
       message: 'Internal server error',
@@ -102,29 +107,31 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 
 // Login user
 router.post('/login', async (req: Request, res: Response): Promise<void> => {
+  const { error } = loginSchema.validate(req.body)
+  if (error) {
+    logger.warn('Login validation failed', {
+      validationError: error.details?.[0]?.message,
+    })
+    res.status(400).json({
+      success: false,
+      message: 'Validation error',
+      error: error.details?.[0]?.message,
+    })
+    return
+  }
+
+  const { email, password } = req.body
+
+  logger.info('Login attempt', { email })
+
   try {
-    const { error } = loginSchema.validate(req.body)
-    if (error) {
-      res.status(400).json({
-        success: false,
-        message: 'Validation error',
-        error:
-          error.details && error.details[0]
-            ? error.details[0].message
-            : undefined,
-      })
-      return
-    }
-
-    const { email, password } = req.body
-
-    // Find user
     const userResult = await pool.query(
       'SELECT id, name, email, password_hash, created_at FROM users WHERE email = $1',
       [email.toLowerCase()]
     )
 
     if (userResult.rows.length === 0) {
+      logger.warn('Login failed: user not found', { email })
       res.status(401).json({
         success: false,
         message: 'Invalid email or password',
@@ -134,9 +141,9 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 
     const user = userResult.rows[0]
 
-    // Verify password
     const isValidPassword = await bcrypt.compare(password, user.password_hash)
     if (!isValidPassword) {
+      logger.warn('Login failed: incorrect password', { email, userId: user.id })
       res.status(401).json({
         success: false,
         message: 'Invalid email or password',
@@ -144,7 +151,6 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       return
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       process.env.JWT_SECRET || 'your-secret-key',
@@ -153,6 +159,8 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
         algorithm: 'HS256',
       } as jwt.SignOptions
     )
+
+    logger.info('Login successful', { userId: user.id, email: user.email })
 
     res.json({
       success: true,
@@ -168,7 +176,10 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       },
     })
   } catch (error) {
-    console.error('Login error:', error)
+    logger.error('Login error', {
+      email,
+      error: error instanceof Error ? error.message : String(error),
+    })
     res.status(500).json({
       success: false,
       message: 'Internal server error',
@@ -185,15 +196,18 @@ router.get(
   '/profile',
   authenticateToken,
   async (req: Request, res: Response): Promise<void> => {
-    try {
-      const userId = (req as any).user.userId
+    const userId = (req as any).user.userId
 
+    logger.info('Profile requested', { userId })
+
+    try {
       const userResult = await pool.query(
         'SELECT id, name, email, created_at FROM users WHERE id = $1',
         [userId]
       )
 
       if (userResult.rows.length === 0) {
+        logger.warn('Profile not found', { userId })
         res.status(404).json({
           success: false,
           message: 'User not found',
@@ -202,6 +216,8 @@ router.get(
       }
 
       const user = userResult.rows[0]
+
+      logger.info('Profile retrieved', { userId })
 
       res.json({
         success: true,
@@ -213,7 +229,10 @@ router.get(
         },
       })
     } catch (error) {
-      console.error('Profile error:', error)
+      logger.error('Profile retrieval failed', {
+        userId,
+        error: error instanceof Error ? error.message : String(error),
+      })
       res.status(500).json({
         success: false,
         message: 'Internal server error',

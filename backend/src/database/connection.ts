@@ -2,7 +2,7 @@
 import { Pool } from 'pg'
 import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'
-// const bcrypt = require('bcrypt')
+import logger from '../utils/logger'
 
 dotenv.config()
 
@@ -21,11 +21,12 @@ export const connectDatabase = async (): Promise<void> => {
   try {
     const client = await pool.connect()
     const result = await client.query('SELECT NOW()')
-    console.log('✅ Database connected successfully')
-    console.log('⏰ Database time:', result.rows[0].now)
+    logger.info('Database connection established', { serverTime: result.rows[0].now })
     client.release()
   } catch (error) {
-    console.error('❌ Database connection failed:', error)
+    logger.error('Database connection failed', {
+      error: error instanceof Error ? error.message : String(error),
+    })
     throw error
   }
 }
@@ -131,13 +132,15 @@ export const initializeDatabase = async (): Promise<void> => {
         )
       }
 
-      console.log('👤 Demo user created with sample tasks')
+      logger.info('Demo user seeded with sample tasks', { email: 'demo@taskmanager.com' })
     }
 
     client.release()
-    console.log('✅ Database schema initialized successfully')
+    logger.info('Database schema initialized')
   } catch (error) {
-    console.error('❌ Database initialization failed:', error)
+    logger.error('Database initialization failed', {
+      error: error instanceof Error ? error.message : String(error),
+    })
     throw error
   }
 }

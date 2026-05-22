@@ -9,5 +9,8 @@ scrape_configs:
   - job_name: 'taskmanager-backend'
     metrics_path: '/api/metrics'
     static_configs:
-      # host.docker.internal is used to reach the backend running on the host machine (Mac) via npm run dev
-      - targets: ['host.docker.internal:5000']
+      - targets: ['backend-service:5000']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']

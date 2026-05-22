@@ -13,6 +13,7 @@ import { errorHandler } from './middleware/errorHandler'
 import { authenticateToken } from './middleware/auth'
 import { connectDatabase, initializeDatabase, pool } from './database/connection' // ← DODAJ pool
 import { collectHttpMetrics, register, updateDbMetrics, updateTaskMetrics } from './middleware/metrics'
+import logger from './utils/logger'
 
 // Load environment variables
 dotenv.config()
@@ -61,15 +62,18 @@ app.get('/api/metrics', async (req, res) => {
   }
 })
 
-// Update metrics periodically
-setInterval(async () => {
+// Initial metrics update
+const initializeMetrics = async () => {
   try {
     await updateTaskMetrics(pool)
     updateDbMetrics(pool)
   } catch (error) {
     console.error('Error updating metrics:', error)
   }
-}, 30000) // Every 30 seconds
+}
+
+// Update metrics periodically
+setInterval(initializeMetrics, 30000) // Every 30 seconds
 
 // CORS configuration
 app.use(
@@ -132,14 +136,16 @@ const startServer = async () => {
     console.log('🗄️  Initializing database schema...')
     await initializeDatabase()
 
+    console.log('📊 Initializing metrics...')
+    await initializeMetrics()
+
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`)
-      console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`)
-      console.log(
-        `🌍 CORS enabled for: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`
-      )
-      console.log(`📋 API Documentation: http://localhost:${PORT}/api/health`)
-      console.log(`📈 Metrics available at: http://localhost:${PORT}/api/metrics`)
+      logger.info('Server started', {
+        port: PORT,
+        environment: process.env.NODE_ENV || 'development',
+        corsOrigin: process.env.FRONTEND_URL || 'http://localhost:5173',
+        metricsEndpoint: `/api/metrics`,
+      })
     })
   } catch (error) {
     console.error('❌ Failed to start server:', error)
@@ -149,9 +155,7 @@ const startServer = async () => {
 
 // Graceful shutdown
 const gracefulShutdown = (signal: string) => {
-  console.log(`🛑 ${signal} received, shutting down gracefully`)
-  
-  // Stop accepting new connections
+  logger.info('Graceful shutdown initiated', { signal })
   process.exit(0)
 }
 
@@ -160,7 +164,10 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'))
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason)
+  logger.error('Unhandled promise rejection', {
+    reason: String(reason),
+    promise: String(promise),
+  })
   process.exit(1)
 })
 

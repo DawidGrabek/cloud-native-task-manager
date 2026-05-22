@@ -9,19 +9,35 @@ clients:
   - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
-  # Collect logs from all Docker containers
   - job_name: docker
-    docker_sd_configs:
-      - host: unix:///var/run/docker.sock
-        refresh_interval: 5s
-        filters:
-          - name: label
-            values: ['com.docker.compose.project=cloud-native-task-manager']
-    relabel_configs:
-      - source_labels: ['__meta_docker_container_name']
-        regex: '/(.*)'
-        target_label: 'container'
-      - source_labels: ['__meta_docker_container_log_stream']
-        target_label: 'logstream'
-      - source_labels: ['__meta_docker_container_label_com_docker_compose_service']
-        target_label: 'service'
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: docker
+          __path__: /var/lib/docker/containers/*/*-json.log
+
+    pipeline_stages:
+      # Docker wraps every log line in JSON: {"log":"...","stream":"stdout","time":"..."}
+      - json:
+          expressions:
+            output: log
+            stream: stream
+
+      # If the extracted "output" is itself JSON (structured backend logs),
+      # parse it to pull out "level" and "service" as Loki labels.
+      - json:
+          expressions:
+            level: level
+            service: service
+          source: output
+
+      # Promote level and service to labels so they can be used in LogQL selectors.
+      - labels:
+          stream:
+          level:
+          service:
+
+      # Replace the Loki log line with the actual message, not the Docker wrapper JSON.
+      - output:
+          source: output
