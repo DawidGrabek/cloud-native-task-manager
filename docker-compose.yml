@@ -6,7 +6,7 @@ services:
   database:
     image: postgres:15-alpine
     container_name: taskmanager-db
-    restart: unless-stopped
+    restart: "no"
     environment:
       POSTGRES_DB: taskmanager
       POSTGRES_USER: admin
@@ -33,7 +33,7 @@ services:
       dockerfile: Dockerfile
       # target: production
     container_name: taskmanager-backend
-    restart: unless-stopped
+    restart: "no"
     environment:
       NODE_ENV: development
       PORT: 5000
@@ -71,7 +71,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: taskmanager-frontend
-    restart: unless-stopped
+    restart: "no"
     environment:
       VITE_API_URL: /api
     ports:
@@ -96,7 +96,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: taskmanager-redis
-    restart: unless-stopped
+    restart: "no"
     ports:
       - '6380:6379'
     command: redis-server --appendonly yes
@@ -114,7 +114,7 @@ services:
   adminer:
     image: adminer:latest
     container_name: taskmanager-adminer
-    restart: unless-stopped
+    restart: "no"
     ports:
       - '8080:8080'
     depends_on:
@@ -131,7 +131,7 @@ services:
   prometheus:
     image: prom/prometheus:v2.47.0
     container_name: taskmanager-prometheus
-    restart: unless-stopped
+    restart: "no"
     volumes:
       - ./docker-monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -147,7 +147,7 @@ services:
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
-    restart: unless-stopped
+    restart: "no"
     pid: host
     volumes:
       - /proc:/host/proc:ro
@@ -167,7 +167,7 @@ services:
   grafana:
     image: grafana/grafana:10.1.0
     container_name: taskmanager-grafana
-    restart: unless-stopped
+    restart: "no"
     volumes:
       - ./docker-monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
       - grafana_data:/var/lib/grafana
@@ -186,7 +186,7 @@ services:
   loki:
     image: grafana/loki:2.9.0
     container_name: taskmanager-loki
-    restart: unless-stopped
+    restart: "no"
     ports:
       - '3100:3100'
     volumes:
@@ -200,7 +200,7 @@ services:
   promtail:
     image: grafana/promtail:latest
     container_name: taskmanager-promtail
-    restart: unless-stopped
+    restart: "no"
     user: root
     volumes:
       - ./docker-monitoring/promtail/promtail-config.yaml:/etc/promtail/config.yml:ro
