@@ -1,4 +1,4 @@
-// src/database/connection.ts
+
 import { Pool } from 'pg'
 import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'

@@ -1,4 +1,4 @@
-// src/middleware/metrics.ts
+
 import { Request, Response, NextFunction } from 'express'
 import { Pool } from 'pg'
 import promClient from 'prom-client'

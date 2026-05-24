@@ -1,4 +1,4 @@
-// src/routes/health.ts
+
 import { Router, Request, Response } from 'express'
 import { pool } from '../database/connection'
 
