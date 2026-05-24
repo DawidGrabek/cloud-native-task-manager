@@ -1,10 +1,10 @@
 
 import request from 'supertest'
 import jwt from 'jsonwebtoken'
-import app from '../app'
-import { pool } from '../database/connection'
+import app from '@/app'
+import { pool } from '@/database/connection'
 
-jest.mock('../database/connection', () => ({
+jest.mock('@/database/connection', () => ({
   pool: {
     query: jest.fn(),
     connect: jest.fn(),

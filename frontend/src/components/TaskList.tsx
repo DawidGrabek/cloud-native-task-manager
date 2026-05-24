@@ -1,7 +1,7 @@
-// src/components/TaskList.tsx
+
 import React from 'react'
-import { TaskCard } from './TaskCard'
-import type { Task } from '../types'
+import { TaskCard } from '@/components/TaskCard'
+import type { Task } from '@/types'
 
 interface TaskListProps {
   tasks: Task[]

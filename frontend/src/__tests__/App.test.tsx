@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { Task, TaskStatus, TaskPriority } from '../types'
+import type { Task, TaskStatus, TaskPriority } from '@/types'
 
 describe('Type definitions', () => {
   it('TaskStatus accepts valid values', () => {

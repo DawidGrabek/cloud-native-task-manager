@@ -2,7 +2,7 @@
 import { Pool } from 'pg'
 import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'
-import logger from '../utils/logger'
+import logger from '@/utils/logger'
 
 dotenv.config()
 

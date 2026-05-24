@@ -5,12 +5,12 @@ import helmet from 'helmet'
 import compression from 'compression'
 import rateLimit from 'express-rate-limit'
 
-import { authRoutes } from './routes/auth'
-import { taskRoutes } from './routes/tasks'
-import { healthRoutes } from './routes/health'
-import { errorHandler } from './middleware/errorHandler'
-import { authenticateToken } from './middleware/auth'
-import { collectHttpMetrics, register } from './middleware/metrics'
+import { authRoutes } from '@/routes/auth'
+import { taskRoutes } from '@/routes/tasks'
+import { healthRoutes } from '@/routes/health'
+import { errorHandler } from '@/middleware/errorHandler'
+import { authenticateToken } from '@/middleware/auth'
+import { collectHttpMetrics, register } from '@/middleware/metrics'
 
 const app = express()
 

@@ -3,9 +3,9 @@ import { Router, Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import Joi from 'joi'
-import { pool } from '../database/connection'
-import { authenticateToken } from '../middleware/auth'
-import logger from '../utils/logger'
+import { pool } from '@/database/connection'
+import { authenticateToken } from '@/middleware/auth'
+import logger from '@/utils/logger'
 
 const router = Router()
 

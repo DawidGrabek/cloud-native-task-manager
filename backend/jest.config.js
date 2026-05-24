@@ -10,6 +10,7 @@ module.exports = {
   testPathIgnorePatterns: ['/node_modules/'],
   moduleNameMapper: {
     // Mock the logger to suppress winston JSON output during tests
-    '^../utils/logger$': '<rootDir>/src/test-utils/logger.ts',
+    '^@/utils/logger$': '<rootDir>/src/test-utils/logger.ts',
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
 }

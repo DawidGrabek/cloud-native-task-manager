@@ -6,14 +6,14 @@ import compression from 'compression'
 import rateLimit from 'express-rate-limit'
 import dotenv from 'dotenv'
 
-import { authRoutes } from './routes/auth'
-import { taskRoutes } from './routes/tasks'  
-import { healthRoutes } from './routes/health'
-import { errorHandler } from './middleware/errorHandler'
-import { authenticateToken } from './middleware/auth'
-import { connectDatabase, initializeDatabase, pool } from './database/connection' // ← DODAJ pool
-import { collectHttpMetrics, register, updateDbMetrics, updateTaskMetrics } from './middleware/metrics'
-import logger from './utils/logger'
+import { authRoutes } from '@/routes/auth'
+import { taskRoutes } from '@/routes/tasks'  
+import { healthRoutes } from '@/routes/health'
+import { errorHandler } from '@/middleware/errorHandler'
+import { authenticateToken } from '@/middleware/auth'
+import { connectDatabase, initializeDatabase, pool } from '@/database/connection' // ← DODAJ pool
+import { collectHttpMetrics, register, updateDbMetrics, updateTaskMetrics } from '@/middleware/metrics'
+import logger from '@/utils/logger'
 
 // Load environment variables
 dotenv.config()

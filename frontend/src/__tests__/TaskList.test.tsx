@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { TaskList } from '../components/TaskList'
-import type { Task } from '../types'
+import { TaskList } from '@/components/TaskList'
+import type { Task } from '@/types'
 
 const mockOnUpdate = vi.fn()
 const mockOnDelete = vi.fn()

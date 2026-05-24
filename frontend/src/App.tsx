@@ -1,11 +1,11 @@
-// src/App.tsx
+
 import React, { useState, useEffect } from 'react'
-import { TaskList } from './components/TaskList'
-import { TaskForm } from './components/TaskForm'
-import { Header } from './components/Header'
-import { LoginForm } from './components/LoginForm'
-import type { Task, User } from './types'
-import { tasksApi, authApi, healthCheck } from './services/api'
+import { TaskList } from '@/components/TaskList'
+import { TaskForm } from '@/components/TaskForm'
+import { Header } from '@/components/Header'
+import { LoginForm } from '@/components/LoginForm'
+import type { Task, User } from '@/types'
+import { tasksApi, authApi, healthCheck } from '@/services/api'
 import './App.css'
 
 function App() {

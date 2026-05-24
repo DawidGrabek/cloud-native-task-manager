@@ -1,7 +1,7 @@
-// src/components/TaskForm.tsx
+
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import type { TaskPriority } from '../types'
+import type { TaskPriority } from '@/types'
 
 interface TaskFormData {
   title: string

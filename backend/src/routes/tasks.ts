@@ -1,9 +1,9 @@
 
 import { Router, Request, Response } from 'express'
 import Joi from 'joi'
-import { pool } from '../database/connection'
-import { taskOperations } from '../middleware/metrics'
-import logger from '../utils/logger'
+import { pool } from '@/database/connection'
+import { taskOperations } from '@/middleware/metrics'
+import logger from '@/utils/logger'
 
 const router = Router()
 

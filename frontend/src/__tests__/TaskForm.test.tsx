@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { TaskForm } from '../components/TaskForm'
+import { TaskForm } from '@/components/TaskForm'
 
 const mockOnSubmit = vi.fn()
 const mockOnCancel = vi.fn()

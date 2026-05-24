@@ -1,6 +1,6 @@
-// src/components/Header.tsx
+
 import React from 'react'
-import type { User } from '../types'
+import type { User } from '@/types'
 
 interface HeaderProps {
   user: User

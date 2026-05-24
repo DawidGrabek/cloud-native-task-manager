@@ -1,6 +1,6 @@
-// src/components/TaskCard.tsx
+
 import React, { useState } from 'react'
-import type { Task, TaskStatus, TaskPriority } from '../types'
+import type { Task, TaskStatus, TaskPriority } from '@/types'
 
 interface TaskCardProps {
   task: Task

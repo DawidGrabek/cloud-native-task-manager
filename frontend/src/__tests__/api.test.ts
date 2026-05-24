@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { authApi, tasksApi, healthCheck } from '../services/api'
+import { authApi, tasksApi, healthCheck } from '@/services/api'
 
 // Mock axios module
 vi.mock('axios', async () => {

@@ -1,4 +1,4 @@
-// src/services/api.ts
+
 import axios, { type AxiosResponse } from 'axios'
 import type {
   Task,
@@ -9,7 +9,7 @@ import type {
   RegisterDto,
   ApiResponse,
   User,
-} from '../types'
+} from '@/types'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 

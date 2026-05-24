@@ -1,7 +1,7 @@
 
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-import { authenticateToken } from '../middleware/auth'
+import { authenticateToken } from '@/middleware/auth'
 
 const JWT_SECRET = 'your-secret-key'
 
