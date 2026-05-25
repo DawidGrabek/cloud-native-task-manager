@@ -3,11 +3,7 @@
   "uid": "taskmanager-app-v2",
   "title": "TaskManager — Application Dashboard",
   "description": "HTTP performance, Node.js runtime and task business metrics",
-  "tags": [
-    "taskmanager",
-    "nodejs",
-    "react"
-  ],
+  "tags": ["taskmanager", "nodejs", "react"],
   "timezone": "browser",
   "schemaVersion": 38,
   "version": 2,
@@ -48,9 +44,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "orientation": "auto",
         "textMode": "auto",
@@ -104,9 +98,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "background",
         "graphMode": "area"
@@ -154,9 +146,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "background",
         "graphMode": "none"
@@ -208,9 +198,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "background",
         "graphMode": "none"
@@ -261,9 +249,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "background",
         "graphMode": "area"
@@ -314,9 +300,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "background",
         "graphMode": "none"
@@ -590,9 +574,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "background",
         "graphMode": "area"
@@ -635,9 +617,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "background",
         "graphMode": "area"
@@ -680,9 +660,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "background",
         "graphMode": "area"
@@ -725,9 +703,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "background",
         "graphMode": "area"
@@ -770,9 +746,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "background",
         "graphMode": "area"
@@ -815,9 +789,7 @@
       },
       "options": {
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ]
+          "calcs": ["lastNotNull"]
         },
         "colorMode": "background",
         "graphMode": "area"
@@ -1181,6 +1153,6 @@
           "refId": "B"
         }
       ]
-    },
+    }
   ]
 }
