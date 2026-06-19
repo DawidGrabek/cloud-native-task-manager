@@ -2,3 +2,16 @@ node_modules/
 dist/
 .env
 *.log
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+.terraform.lock.hcl
+*.tfvars
+!*.tfvars.example
+terraform/environments/dev/backend.tf.bak
+
+# Sensitive outputs
+terraform-outputs.json
