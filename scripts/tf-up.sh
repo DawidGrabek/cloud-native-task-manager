@@ -10,7 +10,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TF_DIR="${SCRIPT_DIR}/../terraform/environments/dev"
-REGION="us-east-1"
+REGION="eu-central-1"
 
 echo "🚀 Starting TaskManager infrastructure..."
 echo ""

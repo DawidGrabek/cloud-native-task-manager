@@ -4,7 +4,7 @@
 
 - **AWS Free Credits** — koszt ograniczony do minimum
 - **`terraform destroy` po każdej sesji** — płacimy tylko za godziny pracy (AWS liczy hourly!)
-- **Bez domeny** — używamy auto-generowanego DNS ALB (`xxxxx.us-east-1.elb.amazonaws.com`)
+- **Bez domeny** — używamy auto-generowanego DNS ALB (`xxxxx.eu-central-1.elb.amazonaws.com`)
 - **Cel: maksymalna wiedza, minimalne koszty**
 - **Po zakończeniu:** screenshoty → README → `terraform destroy --auto-approve` 
 
@@ -88,7 +88,7 @@ GitHub → GitHub Actions (CI + CD)
            │
            └── [Config] Update Git values.yaml ← ArgoCD Image Updater
                                        │
-┌──────────────── AWS (us-east-1) ──────────────────────────────────┐
+┌──────────────── AWS (eu-central-1) ──────────────────────────────────┐
 │                                                                    │
 │   Internet → ALB → Ingress (AWS LBC)
            │
@@ -149,7 +149,7 @@ terraform/
 ```
 
 #### `terraform/modules/vpc/`
-- VPC `10.0.0.0/16`, region `us-east-1`
+- VPC `10.0.0.0/16`, region `eu-central-1`
 - 2 × public subnets (ALB) — 2 AZ
 - 2 × private subnets (EKS nodes) — 2 AZ
 - 1 × NAT Gateway (single, dev — tańsze)
@@ -401,8 +401,8 @@ metadata:
   namespace: argocd
   annotations:
     argocd-image-updater.argoproj.io/image-list: |
-      backend=<account>.dkr.ecr.us-east-1.amazonaws.com/taskmanager/backend
-      frontend=<account>.dkr.ecr.us-east-1.amazonaws.com/taskmanager/frontend
+      backend=<account>.dkr.ecr.eu-central-1.amazonaws.com/taskmanager/backend
+      frontend=<account>.dkr.ecr.eu-central-1.amazonaws.com/taskmanager/frontend
     argocd-image-updater.argoproj.io/write-back-method: git
 spec:
   project: default
@@ -484,7 +484,7 @@ spec:
 cd terraform/environments/dev
 terraform init
 terraform apply -auto-approve
-aws eks update-kubeconfig --name taskmanager-dev --region us-east-1
+aws eks update-kubeconfig --name taskmanager-dev --region eu-central-1
 echo "✅ Infra ready! ALB: $(terraform output alb_dns_name)"
 ```
 

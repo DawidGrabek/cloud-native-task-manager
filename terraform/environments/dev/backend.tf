@@ -12,7 +12,7 @@ terraform {
     # ⚠️  Replace with output from: cd terraform/backend-bootstrap && terraform output
     bucket         = "REPLACE_WITH_BOOTSTRAP_OUTPUT"
     key            = "environments/dev/terraform.tfstate"
-    region         = "us-east-1"
+    region         = "eu-central-1"
     dynamodb_table = "taskmanager-tfstate-lock"
     encrypt        = true
   }

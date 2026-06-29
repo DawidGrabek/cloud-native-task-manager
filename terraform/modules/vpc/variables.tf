@@ -17,7 +17,7 @@ variable "vpc_cidr" {
 variable "azs" {
   description = "Availability zones to use (2 recommended for cost/HA balance)"
   type        = list(string)
-  default     = ["us-east-1a", "us-east-1b"]
+  default     = ["eu-central-1a", "eu-central-1b"]
 }
 
 variable "tags" {

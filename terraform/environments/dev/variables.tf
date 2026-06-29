@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS region"
   type        = string
-  default     = "us-east-1"
+  default     = "eu-central-1"
 }
 
 variable "project" {
@@ -25,7 +25,7 @@ variable "vpc_cidr" {
 variable "azs" {
   description = "Availability zones (2 for cost/HA balance)"
   type        = list(string)
-  default     = ["us-east-1a", "us-east-1b"]
+  default     = ["eu-central-1a", "eu-central-1b"]
 }
 
 variable "github_repo" {
